@@ -74,6 +74,41 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s,s,w,s,w,w,s,w]
 
+"""
+def search(problem, method):
+    # fringe = (state currState, list currMoves, int currCost)
+    if method == dfs:
+        fringe = util.Stack()
+    elif method == bfs:
+        fringe = util.Queue()
+    elif method in (ucs, astar):
+        fringe = util.PriorityQueue
+
+    closed = set()
+
+    #check if start state is goal state
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    #push start state onto fringe
+    fringe.push((problem.getStartState(),[]))
+
+    while not fringe.isEmpty():
+        currState, currMoves = fringe.pop()
+        # check if state has already been visited
+        if currState in closed:
+            continue
+        # else, add current state to closed set so it will not be re-expanded
+        closed.add(currState)
+
+        # check if current state is goal state
+        if problem.isGoalState(currState):
+            return currMoves
+        # else, add all successors to fringe
+        for successor, action, stepCost in problem.getSuccessors(currState):
+            fringe.push((successor, currMoves+[action]))
+"""
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first
@@ -89,19 +124,73 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    #search(problem, dfs)
+
+    fringe = util.Stack() #(state currState, list currMoves, int currCost)
+    closed = set()
+
+    #check if start state is goal state
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    #push start state onto fringe
+    fringe.push((problem.getStartState(),[]))
+
+    while not fringe.isEmpty():
+        currState, currMoves = fringe.pop()
+        # check if state has already been visited
+        if currState in closed:
+            continue
+        # else, add current state to closed set so it will not be re-expanded
+        closed.add(currState)
+
+        # check if current state is goal state
+        if problem.isGoalState(currState):
+            return currMoves
+        # else, add all successors to fringe
+        for successor, action, stepCost in problem.getSuccessors(currState):
+            fringe.push((successor, currMoves+[action]))
+    # if no path is found
+    return []
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    fringe = util.Queue() #(state currState, list currMoves, int currCost)
+    closed = set()
+
+    #check if start state is goal state
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    #push start state onto fringe
+    fringe.push((problem.getStartState(),[]))
+
+    while not fringe.isEmpty():
+        currState, currMoves = fringe.pop()
+        # check if state has already been visited
+        if currState in closed:
+            continue
+        # else, add current state to closed set so it will not be re-expanded
+        closed.add(currState)
+
+        # check if current state is goal state
+        if problem.isGoalState(currState):
+            return currMoves
+        # else, add all successors to fringe
+        for successor, action, stepCost in problem.getSuccessors(currState):
+            fringe.push((successor, currMoves+[action]))
+    # if no path is found
+    return []
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
