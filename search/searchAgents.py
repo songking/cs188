@@ -322,17 +322,20 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             currPos, fringe = state
-            fringeList = []
-            for position in fringe:
-                if position != currPos:
-                    fringeList.append(position)
-            newFringe = tuple(fringeList)
+
             x, y = currPos
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
+            nextPos = (nextx, nexty)
+            fringeList = []
+            for corner in fringe:
+                if corner != nextPos:
+                    fringeList.append(corner)
+            newFringe = tuple(fringeList)
+
             if not hitsWall:
-                successors.append( (((nextx, nexty),newFringe), action, 1))
+                successors.append( ( (nextPos, newFringe), action, 1) )
             
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -370,12 +373,19 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     if problem.isGoalState(state):
         return 0
+
     currPos, fringe = state
     distanceQueue = util.Queue()
-    manDist = 0
+    manDist, minDist, maxDist = 0, 99999, 0
     for corner in fringe:
         manDist += util.manhattanDistance(corner, currPos)
-    return manDist
+        minDist = min(minDist, mazeDistance(currPos, corner, state))
+        maxDist = max(maxDist, mazeDistance(currPos, corner, state))
+    #return manDist
+    #return minDist
+    return maxDist
+    
+
 
 
 class AStarCornersAgent(SearchAgent):
@@ -466,8 +476,20 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    if problem.isGoalState(state):
+        return 0
+    cost = 0
+    foodVertices = foodGrid.asList()
+    foodEdges = [] # edges: (weight, start node, end node)
+
+    # Kruskal's Algorithm for MST
+    # Each vertex starts as disjoint set
+    # Sort all edges in a list in non-decreasing weight order
+    # Weight is mazeDistance
+    # Select edges from list and include in MST, avoiding cycles
+    # Repeat until all vertices are covered
+
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
