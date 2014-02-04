@@ -285,16 +285,20 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        # fringe = corners that still need to be visited
+        fringe = self.corners
+        self.start = (startingGameState.getPacmanPosition(), fringe)
 
     def getStartState(self):
         "Returns the start state (in your state space, not the full Pacman state space)"
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.start
 
     def isGoalState(self, state):
         "Returns whether this search state is a goal state of the problem"
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # state in format (Pacman's position, fringe)
+        return len(state[1]) == 0
 
     def getSuccessors(self, state):
         """
@@ -317,8 +321,19 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
 
-            "*** YOUR CODE HERE ***"
-
+            currPos, fringe = state
+            fringeList = []
+            for position in fringe:
+                if position != currPos:
+                    fringeList.append(position)
+            newFringe = tuple(fringeList)
+            x, y = currPos
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                successors.append( (((nextx, nexty),newFringe), action, 1))
+            
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -353,7 +368,13 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    """
+    currPos, fringe = state
+    distanceQueue = util.Queue()
+    for each in fringe:
+        manDist = util.manhattanDistance(each, currPos)
+        distanceQueue.push((currPos,manDist),manDist)
+        """
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
