@@ -381,9 +381,6 @@ def cornersHeuristic(state, problem):
         maxDist = max(maxDist, util.manhattanDistance(currPos, corner))
     return maxDist
     
-
-
-
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
@@ -471,16 +468,17 @@ def foodHeuristic(state, problem):
       problem.heuristicInfo['wallCount'] = problem.walls.count()
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
-    return 0
 
-    # Kruskal's Algorithm for MST
-    # Each vertex starts as disjoint set
-    # Sort all edges in a list in non-decreasing weight order
-    # Weight is mazeDistance
-    # Select edges from list and include in MST, avoiding cycles
-    # Repeat until all vertices are covered
+    position, foodGrid = state
+    "*** YOUR CODE HERE***"
 
+    distance = -1
 
+    if problem.isGoalState(state):
+        return 0
+    for foodCoordinate in foodGrid.asList():
+        distance = max(distance, util.manhattanDistance(foodCoordinate,position))
+    return distance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
