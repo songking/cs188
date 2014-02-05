@@ -375,7 +375,6 @@ def cornersHeuristic(state, problem):
         return 0
 
     currPos, fringe = state
-    distanceQueue = util.Queue()
     maxDist = 0
     for corner in fringe:
         maxDist = max(maxDist, util.manhattanDistance(currPos, corner))
@@ -477,7 +476,10 @@ def foodHeuristic(state, problem):
     if problem.isGoalState(state):
         return 0
     for foodCoordinate in foodGrid.asList():
-        distance = max(distance, util.manhattanDistance(foodCoordinate,position))
+        x,y = foodCoordinate
+        if foodGrid[x][y]:
+            #distance = max(distance, util.manhattanDistance(foodCoordinate,position))
+            distance = max(distance, mazeDistance(position, foodCoordinate, problem.startingGameState) )
     return distance
 
 class ClosestDotSearchAgent(SearchAgent):
