@@ -376,13 +376,9 @@ def cornersHeuristic(state, problem):
 
     currPos, fringe = state
     distanceQueue = util.Queue()
-    manDist, minDist, maxDist = 0, 99999, 0
+    maxDist = 0
     for corner in fringe:
-        manDist += util.manhattanDistance(corner, currPos)
-        minDist = min(minDist, mazeDistance(currPos, corner, state))
-        maxDist = max(maxDist, mazeDistance(currPos, corner, state))
-    #return manDist
-    #return minDist
+        maxDist = max(maxDist, util.manhattanDistance(currPos, corner))
     return maxDist
     
 
@@ -475,12 +471,7 @@ def foodHeuristic(state, problem):
       problem.heuristicInfo['wallCount'] = problem.walls.count()
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
-    if problem.isGoalState(state):
-        return 0
-    cost = 0
-    foodVertices = foodGrid.asList()
-    foodEdges = [] # edges: (weight, start node, end node)
+    return 0
 
     # Kruskal's Algorithm for MST
     # Each vertex starts as disjoint set
