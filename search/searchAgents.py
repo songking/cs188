@@ -472,7 +472,6 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE***"
 
     distance = -1
-
     if problem.isGoalState(state):
         return 0
     for foodCoordinate in foodGrid.asList():
