@@ -165,7 +165,46 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        actions = gameState.getLegalActions(0)
+        if Directions.STOP in actions:
+        	actions.remove(Directions.STOP)
+        v = float('-inf')
+        nextAction = Directions.STOP
+        for action in actions:
+        	temp = self.minValue(0, 1, gameState.generateSuccessor(0, action))
+        	if temp > v:
+        		v = temp
+        		nextAction = action
+        assert nextAction != Directions.STOP
+        return nextAction
+
+
+    def maxValue(self, depth, agent, gameState):
+    	if depth == self.depth or gameState.isWin() or gameState.isLose():
+    		return self.evaluationFunction(gameState)
+    	actions = gameState.getLegalActions(agent)
+    	if len(actions) == 0:
+    		return self.evaluationFunction(gameState)
+    	v = float('-inf')
+    	for action in actions:
+    		v = max(v, self.minValue(depth, agent+1, gameState.generateSuccessor(agent, action)))
+    	return v
+
+
+    def minValue(self, depth, agent, gameState):
+    	if depth == self.depth or gameState.isWin() or gameState.isLose():
+    		return self.evaluationFunction(gameState)
+    	actions = gameState.getLegalActions(agent)
+    	if len(actions) == 0:
+    		return self.evaluationFunction(gameState)
+    	v = float('inf')
+    	for action in actions:
+    		if agent == gameState.getNumAgents() - 1:
+    			temp = self.maxValue(depth + 1, 0, gameState.generateSuccessor(agent, action))
+    		else:
+    			temp = self.minValue(depth, agent + 1, gameState.generateSuccessor(agent, action))
+    		v = min(v,temp)
+    	return v
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
