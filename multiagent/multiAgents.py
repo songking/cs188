@@ -166,8 +166,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         actions = gameState.getLegalActions(0)
-        if Directions.STOP in actions:
-        	actions.remove(Directions.STOP)
         v = float('-inf')
         nextAction = Directions.STOP
         for action in actions:
@@ -175,7 +173,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
         	if temp > v:
         		v = temp
         		nextAction = action
-        assert nextAction != Directions.STOP
         return nextAction
 
 
