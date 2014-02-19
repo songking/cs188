@@ -77,7 +77,7 @@ class ReflexAgent(Agent):
 
 		"*** YOUR CODE HERE ***"
 		if successorGameState.isWin():
-			return 99999
+			return float('inf')
 
 		x,y = newPos
 		score = successorGameState.getScore()
@@ -334,10 +334,48 @@ def betterEvaluationFunction(currentGameState):
 			Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
 			evaluation function (question 5).
 
-			DESCRIPTION: <write something here so we know what you did>
+			- Our "better" evaluation function is actually just a modified version of our reflex agent.
+			- The evaluation function returns a linear combination of different features.
+			- These features are:
+			- Distance to nearest ghost (if distance is less than or equal to 3 or that ghost's scared time)
+			- Reciprocal of distance to nearest food
+			- If current position (currPos) is a power pellet
+			- Current scared times of all ghosts
+
+
 		"""
 		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
+		# Useful information you can extract from a GameState (pacman.py)
+		currPos = currentGameState.getPacmanPosition()
+		food = currentGameState.getFood()
+		ghostStates = currentGameState.getGhostStates()
+		currScaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
+	
+		if currentGameState.isWin():
+			return float('inf')
+
+		x,y = currPos
+		score = currentGameState.getScore()
+		currGhostPosition = currentGameState.getGhostPosition(1)
+		ghostDistance = util.manhattanDistance(currGhostPosition, currPos)
+		walls = currentGameState.getWalls()
+		for scaredTimes in currScaredTimes:
+			if ghostDistance <= scaredTimes:
+				score += ghostDistance**2
+				score += scaredTimes        
+		if ghostDistance <= 3:
+			score += ghostDistance
+		foodList = food.asList()
+		remainingFood = currentGameState.getNumFood()
+		closestFood = float("inf")
+		if remainingFood > 0:
+			for food in foodList:
+				closestFood = min(closestFood, util.manhattanDistance(food,currPos))
+			score += 1.0/closestFood
+		powerPellets = currentGameState.getCapsules()
+		if currPos in powerPellets:
+			score += 100	
+		return score
 
 # Abbreviation
 better = betterEvaluationFunction
