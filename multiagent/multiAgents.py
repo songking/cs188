@@ -77,7 +77,7 @@ class ReflexAgent(Agent):
 
 		"*** YOUR CODE HERE ***"
 		if successorGameState.isWin():
-			return float('inf')
+			return 99999
 
 		x,y = newPos
 		score = successorGameState.getScore()
@@ -352,7 +352,7 @@ def betterEvaluationFunction(currentGameState):
 		currScaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
 	
 		if currentGameState.isWin():
-			return float('inf')
+			return 99999
 
 		x,y = currPos
 		score = currentGameState.getScore()
