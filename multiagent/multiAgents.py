@@ -275,7 +275,59 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 					legal moves.
 				"""
 				"*** YOUR CODE HERE ***"
-				util.raiseNotDefined()
+				actions = gameState.getLegalActions(0)
+				v = float('-inf')
+				nextAction = Directions.STOP
+				for action in actions:
+					temp = self.expValue(0, 1, gameState.generateSuccessor(0, action))
+					if temp > v:
+						v = temp
+						nextAction = action
+				return nextAction
+
+
+		def maxValue(self, depth, agent, gameState):
+			if depth == self.depth or gameState.isWin() or gameState.isLose():
+				return self.evaluationFunction(gameState)
+			actions = gameState.getLegalActions(agent)
+			if len(actions) == 0:
+				return self.evaluationFunction(gameState)
+			v = float('-inf')
+			for action in actions:
+				v = max(v, self.minValue(depth, agent+1, gameState.generateSuccessor(agent, action)))
+			return v
+
+
+		def minValue(self, depth, agent, gameState):
+			if depth == self.depth or gameState.isWin() or gameState.isLose():
+				return self.evaluationFunction(gameState)
+			actions = gameState.getLegalActions(agent)
+			if len(actions) == 0:
+				return self.evaluationFunction(gameState)
+			v = float('inf')
+			for action in actions:
+				if agent == gameState.getNumAgents() - 1:
+					temp = self.maxValue(depth + 1, 0, gameState.generateSuccessor(agent, action))
+				else:
+					temp = self.minValue(depth, agent + 1, gameState.generateSuccessor(agent, action))
+				v = min(v,temp)
+			return v
+
+		def expValue(self, depth, agent, gameState):
+			if depth == self.depth or gameState.isWin() or gameState.isLose():
+				return self.evaluationFunction(gameState)
+			actions = gameState.getLegalActions(agent)
+			numActions = len(actions)
+			if numActions == 0:
+				return self.evaluationFunction(gameState)
+			v = 0
+			for action in actions:
+				if agent == gameState.getNumAgents() - 1:
+					v += self.maxValue(depth + 1, 0, gameState.generateSuccessor(agent, action))
+				else:
+					v += self.expValue(depth, agent + 1, gameState.generateSuccessor(agent, action))
+			v = float(v)/float(len(actions))
+			return v
 
 def betterEvaluationFunction(currentGameState):
 		"""
