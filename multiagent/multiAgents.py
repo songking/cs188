@@ -341,7 +341,7 @@ def betterEvaluationFunction(currentGameState):
 			- Reciprocal of distance to nearest food
 			- If current position (currPos) is a power pellet
 			- Current scared times of all ghosts
-
+			
 
 		"""
 		"*** YOUR CODE HERE ***"
