@@ -42,10 +42,29 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.mdp = mdp
         self.discount = discount
         self.iterations = iterations
-        self.values = util.Counter() # A Counter is a dict with default 0
+        
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
+        
+        self.values = util.Counter() 
+        for i in range(self.iterations): #i stands for iteration
+          allstates = self.mdp.getStates()
+          VK_subtract_1 = self.values.copy()
+          for s in allstates: #s stands for state
+            values_of_actions = util.Counter()
+            isterminalstate = self.mdp.isTerminal(s)
+            if isterminalstate == False:
+              all_actions = self.mdp.getPossibleActions(s)
+              for a in all_actions: #action is represented by an a
+                TransitionStatesAndProbs = self.mdp.getTransitionStatesAndProbs(s, a)
+                for transition in TransitionStatesAndProbs:
+                  NextState, stateprobability = transition
+                  discount = self.discount
+                  reward = self.mdp.getReward(s, a, NextState)
+                  values_of_actions[a] = values_of_actions[a] + stateprobability * (reward + (discount * VK_subtract_1[NextState]))
+              maxActionValues = values_of_actions.argMax()
+              self.values[s] = values_of_actions[maxActionValues]
 
 
     def getValue(self, state):
@@ -61,7 +80,18 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        isterminalstate = self.mdp.isTerminal(state)
+        value_of_Q = 0.0
+        
+
+        if isterminalstate is False:
+          for transition in self.mdp.getTransitionStatesAndProbs(state,action):
+            next_state, prob = transition
+            reward = self.mdp.getReward(state,action,next_state)
+            discount = self.discount
+            value_of_Q = value_of_Q + prob * (reward + (discount * self.values[next_state])) 
+        return value_of_Q
 
     def computeActionFromValues(self, state):
         """
@@ -73,7 +103,16 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        QValueMax = -10000000000000.0
+        optimal_action = None
+            
+        for a in self.mdp.getPossibleActions(state): # a is actions; self.mdp.getPossibleActions(state) gives you all of the actions
+            temporary = self.getQValue(state, a)
+            if QValueMax <= temporary:
+                QValueMax = temporary
+                optimal_action = a
+        return optimal_action
+
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
