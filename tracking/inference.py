@@ -214,8 +214,8 @@ class ExactInference(InferenceModule):
 		"*** YOUR CODE HERE ***"
 		newBeliefs = util.Counter()
 		for position in self.legalPositions:
-			newPostDist = self.getPositionDistribution(self.setGhostPosition(gameState, position))
-			for newPos, prob in newPostDist.items():
+			newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, position))
+			for newPos, prob in newPosDist.items():
 				newBeliefs[newPos] += prob * self.beliefs[position]
 		self.beliefs = newBeliefs
 
@@ -320,7 +320,8 @@ class ParticleFilter(InferenceModule):
 		belief distribution
 		"""
 		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
+		for particles in self.particles:
+			self.particles += [util.sample(self.getPositionDistribution(self.setGhostPosition(gameState, particle)))]
 
 	def getBeliefDistribution(self):
 		"""
@@ -397,7 +398,10 @@ class JointParticleFilter:
 			and will produce errors
 
 		"""
-		"*** YOUR CODE HERE ***"
+		self.particles = []
+		for i in range(self.numParticles):
+			ghost = [random.choice(self.legalPositions) for i in range(self.numGhosts)]
+			self.particles.append(tuple(ghost))
 
 	def addGhostAgent(self, agent):
 		"Each ghost agent is registered separately and stored (in case they are different)."
@@ -444,6 +448,8 @@ class JointParticleFilter:
 		emissionModels = [busters.getObservationDistribution(dist) for dist in noisyDistances]
 
 		"*** YOUR CODE HERE ***"
+		possible = util.Counter()
+
 
 	def getParticleWithGhostInJail(self, particle, ghostIndex):
 		particle = list(particle)
@@ -504,7 +510,11 @@ class JointParticleFilter:
 
 	def getBeliefDistribution(self):
 		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
+		distribution = util.Counter()
+		for particle in self.particles:
+			distribution[particles]+=1
+		distribution.normalize()
+		return distribution
 		
 # One JointInference module is shared globally across instances of MarginalInference
 jointInference = JointParticleFilter()
