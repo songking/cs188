@@ -403,10 +403,9 @@ class JointParticleFilter:
 
         """
         "*** YOUR CODE HERE ***"
-        self.particles = []
-        for i in range(self.numParticles):
-            ghost = [random.choice(self.legalPositions) for i in range(self.numGhosts)]
-            self.particles.append(tuple(ghost))
+        
+
+        
     
     def addGhostAgent(self, agent):
         "Each ghost agent is registered separately and stored (in case they are different)."
@@ -453,7 +452,9 @@ class JointParticleFilter:
         emissionModels = [busters.getObservationDistribution(dist) for dist in noisyDistances]
 
         "*** YOUR CODE HERE ***"
-        possible = util.Counter()
+        
+
+        
 
     def getParticleWithGhostInJail(self, particle, ghostIndex):
         particle = list(particle)
@@ -507,15 +508,8 @@ class JointParticleFilter:
             # now loop through and update each entry in newParticle...
 
             "*** YOUR CODE HERE ***"
-            prevGhostPositions = list(oldParticle)
-        
-
-            #for every ghost in this particle
-            for i in range(self.numGhosts):
-                newPosDist = getPositionDistributionForGhost(setGhostPositions(gameState, prevGhostPositions),
-                                                       i, self.ghostAgents[i])
-                newParticle[i] = util.sample(newPosDist)
-
+            for x in range(self.numGhosts):
+                newParticle[x] = util.sampleFromCounter(getPositionDistributionForGhost(setGhostPositions(gameState, list(oldParticle)), x, self.ghostAgents[x]))
 
             "*** END YOUR CODE HERE ***"
             newParticles.append(tuple(newParticle))
@@ -525,7 +519,7 @@ class JointParticleFilter:
         "*** YOUR CODE HERE ***"
         distribution = util.Counter()
         for particle in self.particles:
-            distribution[particles]+=1
+            distribution[particle]+=1
         distribution.normalize()
         return distribution
 
