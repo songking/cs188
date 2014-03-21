@@ -403,10 +403,15 @@ class JointParticleFilter:
 
         """
         "*** YOUR CODE HERE ***"
-        
+        self.particles = []
+        GhostNumber = self.numGhosts
+        GhostTup = list(itertools.permutations(self.legalPositions, r = GhostNumber))
 
+        Shuffle = random.shuffle
+        Shuffle(GhostTup)
+        for i in range(self.numParticles):
+            self.particles.append(tuple(GhostTup[i % len(GhostTup)]))
         
-    
     def addGhostAgent(self, agent):
         "Each ghost agent is registered separately and stored (in case they are different)."
         self.ghostAgents.append(agent)
@@ -453,8 +458,35 @@ class JointParticleFilter:
 
         "*** YOUR CODE HERE ***"
         
-
-        
+        numberofGhosts = self.numGhosts
+        count = util.Counter()
+        listofjailedghosts = list()
+        particles = self.particles
+        for i in range(numberofGhosts):
+            if noisyDistances[i] != None:
+                pass
+            else:
+                listofjailedghosts.append(i)
+        for particle in particles:
+            probability = 1.0
+            for ghostIndex in listofjailedghosts:
+                helper = self.getParticleWithGhostInJail(particle, ghostIndex)
+                particle = helper
+            for i in range(numberofGhosts):
+                if i in listofjailedghosts:
+                    pass 
+                else:
+                    probability = emissionModels[i][util.manhattanDistance(particle[i], pacmanPosition)] * probability
+            count[particle] = probability + count[particle] 
+        self.beliefs = count
+        beliefs = self.beliefs
+        if sum([i for i in count.values()]) != 0:
+            particleslength = len(particles)
+            for x in range(particleslength):
+                particles[x] = util.sample(beliefs)
+        if sum([i for i in count.values()]) == 0:
+            initializeParticles = self.initializeParticles()
+            initializeParticles            
 
     def getParticleWithGhostInJail(self, particle, ghostIndex):
         particle = list(particle)
@@ -508,7 +540,8 @@ class JointParticleFilter:
             # now loop through and update each entry in newParticle...
 
             "*** YOUR CODE HERE ***"
-            for x in range(self.numGhosts):
+            numberofGhosts = self.numGhosts
+            for x in range(numberofGhosts):
                 newParticle[x] = util.sampleFromCounter(getPositionDistributionForGhost(setGhostPositions(gameState, list(oldParticle)), x, self.ghostAgents[x]))
 
             "*** END YOUR CODE HERE ***"
